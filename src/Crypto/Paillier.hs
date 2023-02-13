@@ -1,6 +1,8 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Crypto.Paillier where
 
 import Data.Maybe
@@ -30,10 +32,11 @@ data PrvKey = PrvKey{  lambda :: Integer -- ^ lambda(n) = lcm(p-1, q-1)
                      , x :: Integer
                     } deriving (Show)
 
-instance EntropyIO IO EntropyPool where
+instance (IO ~ m) => EntropyIO m where
+    type Entropy m = EntropyPool
     genEntropyPool = createEntropyPool
-    
-genKey :: (Monad m, EntropyIO m EntropyPool) => Int -> m (PubKey, PrvKey)
+
+genKey :: (Monad m, EntropyIO m) => Int -> m (PubKey, PrvKey)
 genKey nBits = do
     -- choose random primes
     pool <- genEntropyPool
@@ -73,7 +76,7 @@ generateR rng pubKey guess =
 
     where (nextGuess, nextRng) = generateBetween rng 1 (nModulo pubKey -1)
 
-encrypt :: (Monad m, EntropyIO m EntropyPool) => PubKey -> PlainText -> m CipherText
+encrypt :: (Monad m, EntropyIO m) => PubKey -> PlainText -> m CipherText
 encrypt pubKey plaintext = do
     pool <- genEntropyPool
     let rng = cprgCreate pool :: SystemRNG
