@@ -22,7 +22,7 @@ library
         Crypto.PaillierRealNum
         Crypto.Paillier
  default-language: Haskell2010
- build-depends: base >=4.6, crypto-numbers >= 0.2.2, crypto-random >= 0.0.7
+ build-depends: base >=4.6, crypto-numbers >= 0.2.2, crypto-random >= 0.0.7, restricted-io-ifc
 
 executable paillier
   main-is: Main.hs

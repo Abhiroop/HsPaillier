@@ -1,7 +1,10 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Crypto.PaillierRealNum where
 
+import Crypto.Random
 import Crypto.Paillier as P hiding (homoSub)
 
+import IFCIO
 
 largenum :: Double
 largenum = 2^10
@@ -24,7 +27,7 @@ decodeF (x1, x2, x3) = (x1D + (x2D/largenum)) / (10^x3)
     x1D = fromInteger x1 :: Double
     x2D = fromInteger x2 :: Double
 
-encrypt :: PubKey -> Double -> IO CT
+encrypt :: (Monad m, EntropyIO m EntropyPool) => PubKey -> Double -> m CT
 encrypt pubK z = do
   let (x1, x2, x3) = encodeF z
   x1' <- P.encrypt pubK x1

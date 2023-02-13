@@ -1,4 +1,6 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Crypto.Paillier where
 
 import Data.Maybe
@@ -11,7 +13,7 @@ import Crypto.Number.ModArithmetic
 import System.IO
 #endif
 
-
+import IFCIO
 
 type PlainText = Integer 
 
@@ -28,12 +30,13 @@ data PrvKey = PrvKey{  lambda :: Integer -- ^ lambda(n) = lcm(p-1, q-1)
                      , x :: Integer
                     } deriving (Show)
 
-
-
-genKey :: Int -> IO (PubKey, PrvKey)
+instance EntropyIO IO EntropyPool where
+    genEntropyPool = createEntropyPool
+    
+genKey :: (Monad m, EntropyIO m EntropyPool) => Int -> m (PubKey, PrvKey)
 genKey nBits = do
     -- choose random primes
-    pool <- createEntropyPool
+    pool <- genEntropyPool
     let rng = cprgCreate pool :: SystemRNG
     let (p, rng1) = generatePrime rng (nBits `div` 2)
     let (q, _) = generatePrime rng1 (nBits `div` 2)
@@ -70,9 +73,9 @@ generateR rng pubKey guess =
 
     where (nextGuess, nextRng) = generateBetween rng 1 (nModulo pubKey -1)
 
-encrypt :: PubKey -> PlainText -> IO CipherText
+encrypt :: (Monad m, EntropyIO m EntropyPool) => PubKey -> PlainText -> m CipherText
 encrypt pubKey plaintext = do
-    pool <- createEntropyPool
+    pool <- genEntropyPool
     let rng = cprgCreate pool :: SystemRNG
 #if 0
     hSetBuffering stdout NoBuffering
