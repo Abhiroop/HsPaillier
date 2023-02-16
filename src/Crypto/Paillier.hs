@@ -3,7 +3,19 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FlexibleInstances #-}
-module Crypto.Paillier where
+module Crypto.Paillier (
+    PlainText
+    , CipherText
+    , PubKey(..)
+    , PrvKey(..)
+    , genKey
+    , encrypt
+    , decrypt
+    , cipherMul
+    , cipherExp
+    , homoSub
+    , EntropyPool
+) where
 
 import Data.Maybe
 import Crypto.Random

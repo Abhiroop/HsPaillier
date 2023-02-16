@@ -1,6 +1,14 @@
 {-# LANGUAGE MonoLocalBinds #-}
 {-# LANGUAGE FlexibleContexts #-}
-module Crypto.PaillierRealNum where
+module Crypto.PaillierRealNum (
+  PT
+  , CT
+  , Crypto.PaillierRealNum.encrypt
+  , Crypto.PaillierRealNum.decrypt
+  , homoAdd
+  , homoSub
+  , homoMul
+) where
 
 import Crypto.Random
 import Crypto.Paillier as P hiding (homoSub)
