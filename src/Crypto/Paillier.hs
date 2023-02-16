@@ -32,13 +32,14 @@ data PrvKey = PrvKey{  lambda :: Integer -- ^ lambda(n) = lcm(p-1, q-1)
                      , x :: Integer
                     } deriving (Show)
 
-instance (IO ~ m) => EntropyIO m where
-    type Entropy m = EntropyPool
+instance EntropyIO IO EntropyPool where
     genEntropyPool = createEntropyPool
 
-genKey :: (Monad m, EntropyIO m) => Int -> m (PubKey, PrvKey)
+genKey :: (Monad m, EntropyIO m EntropyPool) => Int -> m (PubKey, PrvKey)
 genKey nBits = do
     -- choose random primes
+--    pool <- genEntropyPool
+--    let rng = cprgCreate pool :: SystemRNG
     pool <- genEntropyPool
     let rng = cprgCreate pool :: SystemRNG
     let (p, rng1) = generatePrime rng (nBits `div` 2)
@@ -76,7 +77,7 @@ generateR rng pubKey guess =
 
     where (nextGuess, nextRng) = generateBetween rng 1 (nModulo pubKey -1)
 
-encrypt :: (Monad m, EntropyIO m) => PubKey -> PlainText -> m CipherText
+encrypt :: (Monad m, EntropyIO m EntropyPool) => PubKey -> PlainText -> m CipherText
 encrypt pubKey plaintext = do
     pool <- genEntropyPool
     let rng = cprgCreate pool :: SystemRNG
