@@ -33,9 +33,6 @@ Test-suite test-Paillier
   type: exitcode-stdio-1.0
   hs-source-dirs: src,test
   main-is: TestMain.hs
-  build-depends: QuickCheck >= 2.6, HUnit, test-framework-th, test-framework, 
-                test-framework-quickcheck2,
-                base >=4.6, crypto-numbers >= 0.2.2, crypto-random >= 0.0.7,
-                Paillier
+  build-depends: QuickCheck >= 2.6, crypto-random, crypto-numbers, restricted-io-ifc, base >=4.6, Paillier
   default-language: Haskell2010
 
