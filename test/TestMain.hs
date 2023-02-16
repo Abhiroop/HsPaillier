@@ -36,7 +36,7 @@ prop_realnum_test :: IO (PubKey, PrvKey) -> Double -> Property
 prop_realnum_test keys num = monadicIO $ do
     (pub, prv) <- run keys
     ct <- run $ CPRN.encrypt pub num
-    let pt = CPRN.decrypt pub prv ct
+    let pt = CPRN.decrypt prv pub ct
 
     monitor $ whenFail $ do
         putStrLn $ concat ["plaintext:  ", show num]
@@ -50,7 +50,7 @@ prop_realnum_test_mul keys op1 op2 = monadicIO $ do
     (pub, prv) <- run keys
     ct <- run $ CPRN.encrypt pub op1
     let ct2 = CPRN.homoMul pub ct op2
-        pt  = CPRN.decrypt pub prv ct2
+        pt  = CPRN.decrypt prv pub ct2
 
     monitor $ whenFail $ do
         putStrLn $ concat ["op1:         ", show op1]
@@ -68,7 +68,7 @@ prop_realnum_test_sub keys op1 op2 = monadicIO $ do
     ct1 <- run $ CPRN.encrypt pub op1
     ct2 <- run $ CPRN.encrypt pub op2
     let ct3 = CPRN.homoSub pub ct1 ct2
-        pt  = CPRN.decrypt pub prv ct3
+        pt  = CPRN.decrypt prv pub ct3
 
     monitor $ whenFail $ do
         putStrLn $ concat ["op1:         ", show op1]
@@ -86,7 +86,7 @@ prop_realnum_test_add keys op1 op2 = monadicIO $ do
     ct1 <- run $ CPRN.encrypt pub op1
     ct2 <- run $ CPRN.encrypt pub op2
     let ct3 = CPRN.homoAdd pub ct1 ct2
-        pt  = CPRN.decrypt pub prv ct3
+        pt  = CPRN.decrypt prv pub ct3
 
     monitor $ whenFail $ do
         putStrLn $ concat ["op1:         ", show op1]

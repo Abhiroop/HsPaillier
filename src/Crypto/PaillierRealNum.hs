@@ -35,8 +35,8 @@ encrypt pubK z = do
   x2' <- P.encrypt pubK x2
   return (x1', x2', x3)
 
-decrypt :: PubKey -> PrvKey -> CT -> Double
-decrypt pubk prvk (ct1, ct2, i) =
+decrypt :: PrvKey -> PubKey -> CT -> Double
+decrypt prvk pubk (ct1, ct2, i) =
   let (uen1, uen2, x) = (P.decrypt prvk pubk ct1
                         ,P.decrypt prvk pubk ct2
                         ,i
@@ -87,7 +87,7 @@ foo = do
   let m2 = -2.8
   ct1 <- enc pubK m1
   ct2 <- enc pubK m2
-  print $ dec pubK prvK $ homoMul pubK ct1 (2.8)
+  print $ dec prvK pubK $ homoMul pubK ct1 (2.8)
   where
     enc = Crypto.PaillierRealNum.encrypt
     dec = Crypto.PaillierRealNum.decrypt
